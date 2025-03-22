@@ -46,8 +46,8 @@ def train():
     for iteration, batch in enumerate(training_data_loader, 1):
 
         im1, im2, file1, file2 = batch[0], batch[1], batch[2], batch[3]
-        im1 = im1.cuda()
-        im2 = im2.cuda()
+        im1 = im1.cpu()
+        im2 = im2.cpu()
         L1, R1, X1 = model(im1)
         L2, R2, X2 = model(im2)   
         loss1 = C_loss(R1, R2)
@@ -78,7 +78,7 @@ train_set = get_training_set(opt.data_train)
 training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
 
 print('===> Building model ')
-model= net().cuda()
+model= net().cpu()
 optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-8)
 
 milestones = []

@@ -28,7 +28,7 @@ test_set = get_eval_set(opt.data_test)
 testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=1, shuffle=False)
 
 print('===> Building model')
-model = net().cuda()
+model = net().cpu()
 model.load_state_dict(torch.load(opt.model, map_location=lambda storage, loc: storage))
 print('Pre-trained model is loaded.')
 
@@ -39,7 +39,7 @@ def eval():
     for batch in testing_data_loader:
         with torch.no_grad():
             input, name = batch[0], batch[1]
-        input = input.cuda()
+        input = input.cpu()
         print(name)
 
         with torch.no_grad():

@@ -63,7 +63,7 @@ def metrics(im_dir, label_dir):
     avg_lpips = 0
     n = 0
     loss_fn = lpips.LPIPS(net='alex')
-    loss_fn.cuda()
+    loss_fn.cpu()
 
     for item in sorted(glob.glob(im_dir)):
         n += 1
@@ -82,8 +82,8 @@ def metrics(im_dir, label_dir):
 
         ex_p0 = lpips.im2tensor(cv2.resize(lpips.load_image(item), (h, w)))
         ex_ref = lpips.im2tensor(lpips.load_image(label_dir + name))
-        ex_p0 = ex_p0.cuda()
-        ex_ref = ex_ref.cuda()
+        ex_p0 = ex_p0.cpu()
+        ex_ref = ex_ref.cpu()
         score_lpips = loss_fn.forward(ex_ref, ex_p0)
     
         avg_psnr += score_psnr
