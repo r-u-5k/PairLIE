@@ -45,7 +45,7 @@ def eval():
         with torch.no_grad():
             L, R, X = model(input)
             D = input- X        
-            I = torch.pow(L,0.2) * R  # default=0.2, LOL=0.14.
+            I = torch.pow(L, 0.2) * R  # default=0.2, LOL=0.14.
             # flops, params = profile(model, (input,))
             # print('flops: ', flops, 'params: ', params)
 

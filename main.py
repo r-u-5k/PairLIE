@@ -49,11 +49,11 @@ def train():
         im1 = im1.cpu()
         im2 = im2.cpu()
         L1, R1, X1 = model(im1)
-        L2, R2, X2 = model(im2)   
+        L2, R2, X2 = model(im2)
         loss1 = C_loss(R1, R2)
         loss2 = R_loss(L1, R1, im1, X1)
         loss3 = P_loss(im1, X1)
-        loss =  loss1 * 1 + loss2 * 1 + loss3 * 500
+        loss = loss1 * 1 + loss2 * 1 + loss3 * 500
 
         optimizer.zero_grad()
         loss.backward()
@@ -78,7 +78,7 @@ train_set = get_training_set(opt.data_train)
 training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
 
 print('===> Building model ')
-model= net().cpu()
+model = net().cpu()
 optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-8)
 
 milestones = []
@@ -95,4 +95,4 @@ for epoch in range(opt.start_iter, opt.nEpochs + 1):
     train()
     scheduler.step()
     if epoch % opt.snapshots == 0:
-        checkpoint(epoch)          
+        checkpoint(epoch)
