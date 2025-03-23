@@ -15,7 +15,7 @@ from utils import *
 # Training settings
 parser = argparse.ArgumentParser(description='PairLIE')
 parser.add_argument('--batchSize', type=int, default=1, help='training batch size')
-parser.add_argument('--nEpochs', type=int, default=400, help='number of epochs to train for')
+parser.add_argument('--nEpochs', type=int, default=600, help='number of epochs to train for')
 parser.add_argument('--snapshots', type=int, default=20, help='Snapshots')
 parser.add_argument('--start_iter', type=int, default=1, help='Starting Epoch')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning Rate. Default=1e-4')
@@ -24,7 +24,7 @@ parser.add_argument('--threads', type=int, default=0, help='number of threads fo
 parser.add_argument('--decay', type=int, default='100', help='learning rate decay type')
 parser.add_argument('--gamma', type=float, default=0.5, help='learning rate decay factor for step decay')
 parser.add_argument('--seed', type=int, default=123456789, help='random seed to use. Default=123')
-parser.add_argument('--data_train', type=str, default='../dataset/PairLIE-training-dataset/')
+parser.add_argument('--data_train', type=str, default='/content/drive/MyDrive/PairLIE-training-dataset/')
 parser.add_argument('--rgb_range', type=int, default=1, help='maximum value of RGB')
 parser.add_argument('--save_folder', default='weights/', help='Location to save checkpoint models')
 parser.add_argument('--output_folder', default='results/', help='Location to save checkpoint models')
