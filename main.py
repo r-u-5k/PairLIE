@@ -15,7 +15,7 @@ from utils import *
 # Training settings
 parser = argparse.ArgumentParser(description='PairLIE')
 parser.add_argument('--batchSize', type=int, default=1, help='training batch size')
-parser.add_argument('--nEpochs', type=int, default=600, help='number of epochs to train for')
+parser.add_argument('--nEpochs', type=int, default=400, help='number of epochs to train for')
 parser.add_argument('--snapshots', type=int, default=20, help='Snapshots')
 parser.add_argument('--start_iter', type=int, default=1, help='Starting Epoch')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning Rate. Default=1e-4')
