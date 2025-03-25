@@ -98,8 +98,8 @@ def metrics(im_dir, label_dir):
 
 if __name__ == '__main__':
 
-    im_dir = 'results/LOL/I/*.png'
-    label_dir = '../dataset/LIE/LOL-test/reference/'
+    im_dir = '/results/LOL/I/*.png'
+    label_dir = '/content/dataset/LIE/LOL-test/reference/'
 
     # im_dir = 'results/SICE/I/*.JPG'
     # label_dir = '../dataset/LIE/SICE-test/label/'
