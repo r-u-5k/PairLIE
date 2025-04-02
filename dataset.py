@@ -1,22 +1,22 @@
-
 import os
 import random
-import torch
-import torch.utils.data as data
-import numpy as np
 from os import listdir
 from os.path import join
-from PIL import Image, ImageOps
-from random import randrange
-import torchvision.transforms as transforms
+
+import numpy as np
+import torch
+import torch.utils.data as data
+from PIL import Image
 
 
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in [".png", ".jpg", ".bmp", ".JPG", ".jpeg"])
 
+
 def load_img(filepath):
     img = Image.open(filepath).convert('RGB')
     return img
+
 
 class DatasetFromFolder(data.Dataset):
     def __init__(self, data_dir, transform=None):
@@ -25,32 +25,32 @@ class DatasetFromFolder(data.Dataset):
         self.transform = transform
 
     def __getitem__(self, index):
-        index = index
-        data_filenames = [join(join(self.data_dir, str(index+1)), x) for x in listdir(join(self.data_dir, str(index+1))) if is_image_file(x)]
-        num = len(data_filenames)
-        index1 = random.randint(1,num)
-        index2 = random.randint(1,num)
-        while abs(index1 - index2) == 0:
-            index2 = random.randint(1,num)
+        folder_path = join(self.data_dir, str(index + 1))
+        data_filenames = [join(folder_path, x) for x in listdir(folder_path) if is_image_file(x)]
 
-        im1 = load_img(data_filenames[index1-1])
-        im2 = load_img(data_filenames[index2-1])
+        chosen_files = random.sample(data_filenames, 3)
 
-        _, file1 = os.path.split(data_filenames[index1-1])
-        _, file2 = os.path.split(data_filenames[index2-1])
+        images = []
+        file_names = []
+        for file in chosen_files:
+            im = load_img(file)
+            images.append(im)
+            _, fname = os.path.split(file)
+            file_names.append(fname)
 
-        seed = np.random.randint(123456789) # make a seed with numpy generator 
         if self.transform:
-            random.seed(seed) # apply this seed to img tranfsorms
-            torch.manual_seed(seed) # needed for torchvision 0.7
-            im1 = self.transform(im1)
-            random.seed(seed)
-            torch.manual_seed(seed)         
-            im2 = self.transform(im2)        
-        return im1, im2, file1, file2
+            seed = np.random.randint(123456789)
+            transformed_images = []
+            for im in images:
+                random.seed(seed)
+                torch.manual_seed(seed)
+                transformed_images.append(self.transform(im))
+            images = transformed_images
+
+        return images[0], images[1], images[2], file_names[0], file_names[1], file_names[2]
 
     def __len__(self):
-        return 324 # for custom datasets, please check the dataset size and modify this number
+        return 324
 
 
 class DatasetFromFolderEval(data.Dataset):
@@ -71,4 +71,3 @@ class DatasetFromFolderEval(data.Dataset):
 
     def __len__(self):
         return len(self.data_filenames)
-

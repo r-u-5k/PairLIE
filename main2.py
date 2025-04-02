@@ -24,9 +24,9 @@ parser.add_argument('--threads', type=int, default=0, help='number of threads fo
 parser.add_argument('--decay', type=int, default='100', help='learning rate decay type')
 parser.add_argument('--gamma', type=float, default=0.5, help='learning rate decay factor for step decay')
 parser.add_argument('--seed', type=int, default=123456789, help='random seed to use. Default=123')
-parser.add_argument('--data_train', type=str, default='/content/drive/MyDrive/PairLIE-training-dataset/')
+parser.add_argument('--data_train', type=str, default='/content/drive/MyDrive/PairLIE-training-dataset-v2/')
 parser.add_argument('--rgb_range', type=int, default=1, help='maximum value of RGB')
-parser.add_argument('--save_folder', default='/content/drive/MyDrive/PairLIE_checkpoints_new/', help='Location to save checkpoint models')
+parser.add_argument('--save_folder', default='/content/drive/MyDrive/PairLIE_checkpoints_v2/', help='Location to save checkpoint models')
 parser.add_argument('--output_folder', default='results/', help='Location to save checkpoint models')
 opt = parser.parse_args()
 
@@ -84,7 +84,7 @@ def train():
 
 
 def checkpoint(epoch):
-    model_out_path = opt.save_folder+"epoch_{}.pth".format(epoch)
+    model_out_path = opt.save_folder+"epoch_v2_{}.pth".format(epoch)
     torch.save(model.state_dict(), model_out_path)
     print("Checkpoint saved to {}".format(model_out_path))
 
