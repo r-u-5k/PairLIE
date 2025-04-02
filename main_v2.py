@@ -1,15 +1,14 @@
 import os
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-import torch
 import argparse
 import random
-import shutil
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 import torch.optim.lr_scheduler as lrs
 from torch.utils.data import DataLoader
 from net.net import net
-from data import get_training_set, get_eval_set
+from data import get_training_set
 from utils import *
 
 # Training settings
@@ -30,6 +29,7 @@ parser.add_argument('--save_folder', default='/content/drive/MyDrive/PairLIE_che
 parser.add_argument('--output_folder', default='results/', help='Location to save checkpoint models')
 opt = parser.parse_args()
 
+
 def seed_torch(seed=opt.seed):
     random.seed(seed)
     np.random.seed(seed)
@@ -37,8 +37,11 @@ def seed_torch(seed=opt.seed):
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
+
+
 seed_torch()
 cudnn.benchmark = True
+
 
 def train():
     model.train()
@@ -84,9 +87,10 @@ def train():
 
 
 def checkpoint(epoch):
-    model_out_path = opt.save_folder+"epoch_v2_{}.pth".format(epoch)
+    model_out_path = opt.save_folder + f"epoch_v2_{epoch}.pth"
     torch.save(model.state_dict(), model_out_path)
     print("Checkpoint saved to {}".format(model_out_path))
+
 
 cuda = opt.gpu_mode
 if cuda and not torch.cuda.is_available():
@@ -101,7 +105,7 @@ model = net().cuda()
 optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-8)
 
 milestones = []
-for i in range(1, opt.nEpochs+1):
+for i in range(1, opt.nEpochs + 1):
     if i % opt.decay == 0:
         milestones.append(i)
 
