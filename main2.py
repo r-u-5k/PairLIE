@@ -45,36 +45,30 @@ def train():
     loss_print = 0
     for iteration, batch in enumerate(training_data_loader, 1):
 
-        # 배치에서 3개의 이미지를 추출합니다.
         im1, im2, im3, file1, file2, file3 = batch[0], batch[1], batch[2], batch[3], batch[4], batch[5]
         im1 = im1.cpu()
         im2 = im2.cpu()
         im3 = im3.cpu()
 
-        # 각 이미지에 대해 모델의 출력을 계산합니다.
         L1, R1, X1 = model(im1)
         L2, R2, X2 = model(im2)
         L3, R3, X3 = model(im3)
 
-        # 3개의 이미지에 대해 반사 성분(R) 간의 일관성 손실(C_loss)을 모든 쌍으로 계산합니다.
         loss_C1 = C_loss(R1, R2)
         loss_C2 = C_loss(R2, R3)
         loss_C3 = C_loss(R1, R3)
-        loss1 = (loss_C1 + loss_C2 + loss_C3) / 3  # 평균하여 일관성 강화
+        loss1 = (loss_C1 + loss_C2 + loss_C3) / 3
 
-        # 각 이미지별 조명 및 반사 관련 손실(R_loss)을 계산합니다.
         loss_R1 = R_loss(L1, R1, im1, X1)
         loss_R2 = R_loss(L2, R2, im2, X2)
         loss_R3 = R_loss(L3, R3, im3, X3)
         loss2 = (loss_R1 + loss_R2 + loss_R3) / 3
 
-        # 각 이미지별 재구성 손실(P_loss)을 계산합니다.
         loss_P1 = P_loss(im1, X1)
         loss_P2 = P_loss(im2, X2)
         loss_P3 = P_loss(im3, X3)
         loss3 = (loss_P1 + loss_P2 + loss_P3) / 3
 
-        # 전체 손실을 가중치를 고려하여 결합합니다.
         loss = loss1 * 1 + loss2 * 1 + loss3 * 500
 
         optimizer.zero_grad()
