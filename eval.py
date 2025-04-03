@@ -18,7 +18,7 @@ parser.add_argument('--rgb_range', type=int, default=1, help='maximum value of R
 # parser.add_argument('--data_test', type=str, default='../dataset/LIE/LOL-test/raw')
 # parser.add_argument('--data_test', type=str, default='../dataset/LIE/SICE-test/image')
 parser.add_argument('--data_test', type=str, default='../dataset/LIE/MEF')
-parser.add_argument('--model', default='weights/PairLIE.pth', help='Pretrained base model')  
+parser.add_argument('--model', default='weights/PairLIE.pth', help='Pretrained base model')
 parser.add_argument('--output_folder', type=str, default='results/MEF/')
 opt = parser.parse_args()
 
@@ -28,7 +28,7 @@ test_set = get_eval_set(opt.data_test)
 testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=1, shuffle=False)
 
 print('===> Building model')
-model = net().cpu()
+model = net().cuda()
 model.load_state_dict(torch.load(opt.model, map_location=lambda storage, loc: storage))
 print('Pre-trained model is loaded.')
 
@@ -39,12 +39,12 @@ def eval():
     for batch in testing_data_loader:
         with torch.no_grad():
             input, name = batch[0], batch[1]
-        input = input.cpu()
+        input = input.cuda()
         print(name)
 
         with torch.no_grad():
             L, R, X = model(input)
-            D = input- X        
+            D = input - X
             I = torch.pow(L, 0.2) * R  # default=0.2, LOL=0.14.
             # flops, params = profile(model, (input,))
             # print('flops: ', flops, 'params: ', params)
@@ -56,10 +56,10 @@ def eval():
             os.mkdir(opt.output_folder + 'I/')  
             os.mkdir(opt.output_folder + 'D/')                       
 
-        L = L.cpu()
-        R = R.cpu()
-        I = I.cpu()
-        D = D.cpu()        
+        L = L.cuda()
+        R = R.cuda()
+        I = I.cuda()
+        D = D.cuda()
 
         L_img = transforms.ToPILImage()(L.squeeze(0))
         R_img = transforms.ToPILImage()(R.squeeze(0))
