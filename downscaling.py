@@ -3,7 +3,7 @@ from PIL import Image
 
 input_base_folder = 'PairLIE-training-dataset'
 
-scales = [1, 0.5, 0.25]
+downscale_factor = 0.5
 
 for folder_name in os.listdir(input_base_folder):
     folder_path = os.path.join(input_base_folder, folder_name)
@@ -16,14 +16,13 @@ for folder_name in os.listdir(input_base_folder):
             image_path = os.path.join(folder_path, filename)
             img = Image.open(image_path)
 
-            for scale in scales:
-                if scale == 1:
-                    continue
+            original_size = (img.width, img.height)
 
-                new_size = (int(img.width * scale), int(img.height * scale))
-                resized_img = img.resize(new_size, Image.LANCZOS)
+            downscaled_size = (int(img.width * downscale_factor), int(img.height * downscale_factor))
+            downscaled_img = img.resize(downscaled_size, Image.LANCZOS)
+            restored_img = downscaled_img.resize(original_size, Image.BICUBIC)
 
-                new_filename = f"{os.path.splitext(filename)[0]}_downscaled_{new_size[0]}x{new_size[1]}.png"
-                resized_img.save(os.path.join(folder_path, new_filename))
+            new_filename = f"{os.path.splitext(filename)[0]}_{downscaled_size[0]}x{downscaled_size[1]}.png"
+            restored_img.save(os.path.join(folder_path, new_filename))
 
 print("해상도 변환 완료")
