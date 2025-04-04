@@ -1,11 +1,13 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "3"
 import torch
 import glob
 import cv2
 import lpips
 import numpy as np
 from PIL import Image
+
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+
 
 def ssim(prediction, target):
     C1 = (0.01 * 255)**2
@@ -63,7 +65,7 @@ def metrics(im_dir, label_dir):
     avg_lpips = 0
     n = 0
     loss_fn = lpips.LPIPS(net='alex')
-    loss_fn.cpu()
+    loss_fn.cuda()
 
     for item in sorted(glob.glob(im_dir)):
         n += 1
@@ -82,8 +84,8 @@ def metrics(im_dir, label_dir):
 
         ex_p0 = lpips.im2tensor(cv2.resize(lpips.load_image(item), (h, w)))
         ex_ref = lpips.im2tensor(lpips.load_image(label_dir + name))
-        ex_p0 = ex_p0.cpu()
-        ex_ref = ex_ref.cpu()
+        ex_p0 = ex_p0.cuda()
+        ex_ref = ex_ref.cuda()
         score_lpips = loss_fn.forward(ex_ref, ex_p0)
     
         avg_psnr += score_psnr
@@ -98,7 +100,7 @@ def metrics(im_dir, label_dir):
 
 if __name__ == '__main__':
 
-    im_dir = '/results/LOL/I/*.png'
+    im_dir = '/img/results/I/*.png'
     label_dir = '/img/reference/'
 
     # im_dir = 'results/SICE/I/*.JPG'

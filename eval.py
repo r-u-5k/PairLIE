@@ -1,12 +1,13 @@
 import os
-
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import argparse
 from net.net import net
 from data import get_eval_set
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from utils import *
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
 
 parser = argparse.ArgumentParser(description='PairLIE')
 parser.add_argument('--testBatchSize', type=int, default=1, help='testing batch size')
