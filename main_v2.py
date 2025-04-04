@@ -1,6 +1,4 @@
 import os
-
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import argparse
 import random
 import torch.optim as optim
@@ -10,6 +8,11 @@ from torch.utils.data import DataLoader
 from net.net import net
 from data import get_training_set
 from utils import *
+import csv
+import numpy as np
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
 
 # Training settings
 parser = argparse.ArgumentParser(description='PairLIE')
@@ -42,10 +45,17 @@ def seed_torch(seed=opt.seed):
 seed_torch()
 cudnn.benchmark = True
 
+csv_filename = "epoch_losses.csv"
+if not os.path.exists(csv_filename):
+    with open(csv_filename, 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(["Epoch", "Average_Loss"])
+
 
 def train():
     model.train()
-    loss_print = 0
+    total_loss = 0.0
+    num_batches = 0
     for iteration, batch in enumerate(training_data_loader, 1):
 
         im1, im2, im3, file1, file2, file3 = batch[0], batch[1], batch[2], batch[3], batch[4], batch[5]
@@ -77,19 +87,22 @@ def train():
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        loss_print += loss.item()
+
+        total_loss += loss.item()
+        num_batches += 1
 
         if iteration % 10 == 0:
             print("===> Epoch[{}]({}/{}): Loss: {:.4f} || Learning rate: lr={}.".format(
-                epoch, iteration, len(training_data_loader), loss_print, optimizer.param_groups[0]['lr']
+                epoch, iteration, len(training_data_loader), loss.item(), optimizer.param_groups[0]['lr']
             ))
-            loss_print = 0
+    average_loss = total_loss / num_batches if num_batches > 0 else 0
+    return average_loss
 
 
 def checkpoint(epoch):
     model_out_path = opt.save_folder + f"epoch_v2_{epoch}.pth"
     torch.save(model.state_dict(), model_out_path)
-    print("Checkpoint saved to {}".format(model_out_path))
+    print(f"Checkpoint saved to {model_out_path}")
 
 
 cuda = opt.gpu_mode
@@ -115,7 +128,10 @@ score_best = 0
 # shutil.rmtree(opt.save_folder)
 # os.mkdir(opt.save_folder)
 for epoch in range(opt.start_iter, opt.nEpochs + 1):
-    train()
+    avg_loss = train()
     scheduler.step()
+    with open(csv_filename, 'a', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow([epoch, avg_loss])
     if epoch % opt.snapshots == 0:
         checkpoint(epoch)
