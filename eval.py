@@ -16,8 +16,8 @@ parser.add_argument('--threads', type=int, default=0, help='number of threads fo
 parser.add_argument('--rgb_range', type=int, default=1, help='maximum value of RGB')
 # parser.add_argument('--data_test', type=str, default='../dataset/LIE/LOL-test/raw')
 # parser.add_argument('--data_test', type=str, default='../dataset/LIE/SICE-test/image')
-parser.add_argument('--data_test', type=str, default='/content/PairLIE/img/raw')
-parser.add_argument('--model', default='weights/epoch_v2_400.pth', help='Pretrained base model')
+parser.add_argument('--data_test', type=str, default='img/raw')
+parser.add_argument('--model', default='weights/epoch_v2.1_400.pth', help='Pretrained base model')
 parser.add_argument('--output_folder', type=str, default='img/results/')
 opt = parser.parse_args()
 

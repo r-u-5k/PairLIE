@@ -1,9 +1,9 @@
 import cv2
 import os
 
-high_folder = 'high'
+high_folder = 'middle'
 low_folder = 'low'
-output_folder = 'middle'
+output_folder = 'middle-low'
 
 os.makedirs(output_folder, exist_ok=True)
 
