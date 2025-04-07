@@ -1,8 +1,8 @@
 import re
 import csv
 
-log_file = "log.txt"
-csv_file = "results.csv"
+log_file = "../log.txt"
+csv_file = "../results/results.csv"
 
 pattern = re.compile(r"===> Epoch\[(\d+)\]\((\d+)/324\): Loss:\s*([\d\.]+)")
 
