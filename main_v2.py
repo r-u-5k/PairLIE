@@ -26,7 +26,7 @@ parser.add_argument('--threads', type=int, default=0, help='number of threads fo
 parser.add_argument('--decay', type=int, default='100', help='learning rate decay type')
 parser.add_argument('--gamma', type=float, default=0.5, help='learning rate decay factor for step decay')
 parser.add_argument('--seed', type=int, default=123456789, help='random seed to use. Default=123')
-parser.add_argument('--data_train', type=str, default='PairLIE-training-dataset-v2/')
+parser.add_argument('--data_train', type=str, default='training-dataset/')
 parser.add_argument('--rgb_range', type=int, default=1, help='maximum value of RGB')
 parser.add_argument('--save_folder', default='weights/', help='Location to save checkpoint models')
 parser.add_argument('--output_folder', default='results/', help='Location to save checkpoint models')
@@ -58,7 +58,7 @@ def train():
     num_batches = 0
     for iteration, batch in enumerate(training_data_loader, 1):
 
-        im1, im2, im3, file1, file2, file3 = batch[0], batch[1], batch[2], batch[3], batch[4], batch[5]
+        im1, im2, im3, file1_list, file2_list, file3_list = batch
         im1 = im1.cuda()
         im2 = im2.cuda()
         im3 = im3.cuda()
@@ -100,7 +100,7 @@ def train():
 
 
 def checkpoint(epoch):
-    model_out_path = opt.save_folder + f"epoch_v2_{epoch}.pth"
+    model_out_path = opt.save_folder + f"epoch_{epoch}.pth"
     torch.save(model.state_dict(), model_out_path)
     print(f"Checkpoint saved to {model_out_path}")
 

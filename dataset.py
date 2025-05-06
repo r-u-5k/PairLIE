@@ -21,36 +21,45 @@ def load_img(filepath):
 class DatasetFromFolder(data.Dataset):
     def __init__(self, data_dir, transform=None):
         super(DatasetFromFolder, self).__init__()
-        self.data_dir = data_dir
+        self.dir_m = join(data_dir, 'middle')
+        self.dir_l = join(data_dir, 'low')
+        self.dir_ml = join(data_dir, 'middle-low')
+
+        self.filenames = sorted([
+            fname for fname in listdir(self.dir_m)
+            if is_image_file(fname)
+        ])
+
         self.transform = transform
 
+    def __len__(self):
+        return len(self.filenames)
+
     def __getitem__(self, index):
-        folder_path = join(self.data_dir, str(index + 1))
-        data_filenames = [join(folder_path, x) for x in listdir(folder_path) if is_image_file(x)]
+        fname = self.filenames[index]
 
-        chosen_files = random.sample(data_filenames, 3)
+        path_m = join(self.dir_m, fname)
+        path_l = join(self.dir_l, fname)
+        path_ml = join(self.dir_ml, fname)
 
-        images = []
-        file_names = []
-        for file in chosen_files:
-            im = load_img(file)
-            images.append(im)
-            _, fname = os.path.split(file)
-            file_names.append(fname)
+        im_m = load_img(path_m)
+        im_l = load_img(path_l)
+        im_ml = load_img(path_ml)
 
         if self.transform:
             seed = np.random.randint(123456789)
-            transformed_images = []
-            for im in images:
-                random.seed(seed)
-                torch.manual_seed(seed)
-                transformed_images.append(self.transform(im))
-            images = transformed_images
+            random.seed(seed);
+            torch.manual_seed(seed)
+            im_m = self.transform(im_m)
+            random.seed(seed);
+            torch.manual_seed(seed)
+            im_l = self.transform(im_l)
+            random.seed(seed);
+            torch.manual_seed(seed)
+            im_ml = self.transform(im_ml)
 
-        return images[0], images[1], images[2], file_names[0], file_names[1], file_names[2]
-
-    def __len__(self):
-        return 324
+        # 반환 순서는 train 루프에 맞춰 (middle, low, middle-low, fname x3)
+        return im_m, im_l, im_ml, fname, fname, fname
 
 
 class DatasetFromFolderEval(data.Dataset):
