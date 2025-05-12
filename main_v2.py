@@ -10,6 +10,7 @@ from data import get_training_set
 from utils import *
 import csv
 import numpy as np
+import datetime
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
@@ -45,7 +46,9 @@ def seed_torch(seed=opt.seed):
 seed_torch()
 cudnn.benchmark = True
 
-csv_filename = "epoch_losses.csv"
+today_str = datetime.now().strftime("%y%m%d")
+csv_filename = f"epoch_losses_{today_str}.csv"
+
 if not os.path.exists(csv_filename):
     with open(csv_filename, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)

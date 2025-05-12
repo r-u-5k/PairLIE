@@ -21,12 +21,12 @@ def load_img(filepath):
 class DatasetFromFolder(data.Dataset):
     def __init__(self, data_dir, transform=None):
         super(DatasetFromFolder, self).__init__()
-        self.dir_m = join(data_dir, 'middle')
+        self.dir_h = join(data_dir, 'light')
+        self.dir_m = join(data_dir, 'mid')
         self.dir_l = join(data_dir, 'low')
-        self.dir_ml = join(data_dir, 'middle-low')
 
         self.filenames = sorted([
-            fname for fname in listdir(self.dir_m)
+            fname for fname in listdir(self.dir_h)
             if is_image_file(fname)
         ])
 
@@ -38,28 +38,27 @@ class DatasetFromFolder(data.Dataset):
     def __getitem__(self, index):
         fname = self.filenames[index]
 
+        path_h = join(self.dir_h, fname)
         path_m = join(self.dir_m, fname)
         path_l = join(self.dir_l, fname)
-        path_ml = join(self.dir_ml, fname)
 
+        im_h = load_img(path_h)
         im_m = load_img(path_m)
         im_l = load_img(path_l)
-        im_ml = load_img(path_ml)
 
         if self.transform:
             seed = np.random.randint(123456789)
+            random.seed(seed);
+            torch.manual_seed(seed)
+            im_h = self.transform(im_h)
             random.seed(seed);
             torch.manual_seed(seed)
             im_m = self.transform(im_m)
             random.seed(seed);
             torch.manual_seed(seed)
             im_l = self.transform(im_l)
-            random.seed(seed);
-            torch.manual_seed(seed)
-            im_ml = self.transform(im_ml)
 
-        # 반환 순서는 train 루프에 맞춰 (middle, low, middle-low, fname x3)
-        return im_m, im_l, im_ml, fname, fname, fname
+        return im_h, im_m, im_l, fname, fname, fname
 
 
 class DatasetFromFolderEval(data.Dataset):
