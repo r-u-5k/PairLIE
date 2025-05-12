@@ -68,9 +68,9 @@ def train():
         L3, R3, X3 = model(im3)
 
         loss_C1 = C_loss(R1, R2)
-        loss_C2 = C_loss(R2, R3)
-        loss1 = (loss_C1 + loss_C2) / 2
-        # loss_C3 = C_loss(R1, R3)
+        # loss_C2 = C_loss(R2, R3)
+        loss_C3 = C_loss(R1, R3)
+        loss1 = (loss_C1 + loss_C3) / 2
         # loss1 = (loss_C1 + loss_C2 + loss_C3) / 3
 
         loss_R1 = R_loss(L1, R1, im1, X1)
