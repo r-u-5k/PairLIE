@@ -4,11 +4,17 @@ import cv2
 import numpy as np
 
 
-def gamma_correction(img, gamma=0.4):
+def gamma_correction(img, gamma):
     img_f = img.astype(np.float32) / 255.0
-    corrected = np.power(img_f, gamma) * 255.0
-    return np.clip(corrected, 0, 255).astype(np.uint8)
 
+    min_val = img_f.min()
+    max_val = img_f.max()
+    normalized = (img_f - min_val) / (max_val - min_val)
+
+    gamma_corrected = np.power(normalized, gamma)
+    scaled = gamma_corrected * 255.0
+
+    return scaled.astype(np.uint8)
 
 img_folder = 'high'
 output_folder = 'mid'
