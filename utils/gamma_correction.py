@@ -16,6 +16,7 @@ def gamma_correction(img, gamma):
 
     return scaled.astype(np.uint8)
 
+
 img_folder = 'high'
 output_folder = 'mid'
 os.makedirs(output_folder, exist_ok=True)
