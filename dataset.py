@@ -48,13 +48,13 @@ class DatasetFromFolder(data.Dataset):
 
         if self.transform:
             seed = np.random.randint(123456789)
-            random.seed(seed);
+            random.seed(seed)
             torch.manual_seed(seed)
             im_h = self.transform(im_h)
-            random.seed(seed);
+            random.seed(seed)
             torch.manual_seed(seed)
             im_m = self.transform(im_m)
-            random.seed(seed);
+            random.seed(seed)
             torch.manual_seed(seed)
             im_l = self.transform(im_l)
 

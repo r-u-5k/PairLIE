@@ -70,11 +70,11 @@ def train():
         L2, R2, X2 = model(im2)
         L3, R3, X3 = model(im3)
 
-        loss_C1 = C_loss(R1, R2)
-        loss_C2 = C_loss(R2, R3)
-        loss_C3 = C_loss(R1, R3)
-        # loss1 = (loss_C1 + loss_C3) / 2
-        loss1 = (loss_C1 + loss_C2 + loss_C3) / 3
+        loss_C1 = C_loss(R1, R2) # light <-> mid
+        # loss_C2 = C_loss(R2, R3)
+        loss_C3 = C_loss(R1, R3) # light <-> low
+        loss1 = 0.4 * loss_C1 + 0.6 * loss_C3
+        # loss1 = (loss_C1 + loss_C2 + loss_C3) / 3
 
         loss_R1 = R_loss(L1, R1, im1, X1)
         loss_R2 = R_loss(L2, R2, im2, X2)
